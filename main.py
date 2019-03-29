@@ -44,9 +44,6 @@ def write_csv(u, instrument):
                     writer.writerow(live_feed.values())
             else:
                 if stamp != live_feed['timestamp']:
-                    tohlc = {'timestamp': live_feed['timestamp'], 'open': live_feed['open'], 'high': live_feed['high'],
-                             'low': live_feed['low'], 'close': live_feed['close']}
-                    print(tohlc)
                     stamp = live_feed['timestamp']
                     with open(instrument + '.csv', 'wb+') as output:
                         writer = csv.writer(output)
@@ -58,7 +55,7 @@ def write_csv(u, instrument):
             pass
 
 if __name__ == "__main__":
-    list_of_instruments = ["TATACHEM", "YESBANK"]
+    list_of_instruments = ["TATACHEM", "YESBANK"] # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
     s = Session(api_key["ak"])
     s.set_redirect_uri('http://127.0.0.1')
     s.set_api_secret(api_key["aks"])
