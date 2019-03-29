@@ -1,42 +1,10 @@
-api_key = {"ak":"sW8QnFzjKO3tmY2LTehyg5sztKCTPmN6fzymZKVh","aks":"97h1eqpunb","oauth":"80a243368dfdc90579ad0bcef9bc8705b5fca013","username":"164598","password":"Sanket@123","doy":"1991"}
-from upstox_api.api import *
-import time
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver import ChromeOptions, Chrome
-from webdriver_manager.chrome import ChromeDriverManager
-import socket
+import csv
 
-# This automates the process of getting access token
-def openurl_function(api_key):
-    driver = webdriver.Chrome('./chromedriver.exe')
-    driver.get('https://api.upstox.com/index/dialog/authorize?apiKey=sW8QnFzjKO3tmY2LTehyg5sztKCTPmN6fzymZKVh&redirect_uri=http://127.0.0.1&response_type=code')
-    driver.find_element_by_id("name").send_keys(api_key["username"])
-    driver.find_element_by_id("password").send_keys(api_key["password"])
-    driver.find_element_by_id("password2fa").send_keys(api_key["doy"])
-    driver.find_element_by_id("password2fa").submit()
-    driver.find_element_by_id("allow").submit()
-    url=driver.current_url
-    code=url.split("=")
-    driver.quit()
-    print(code[1])
-    return code[1]
+a= {'timestamp': 1553850656000, 'exchange': 'NSE_EQ', 'symbol': 'ACC', 'ltp': 1628.85, 'open': 1623, 'high': 1629, 'low': 1601.2, 'close': 1617.8, 'vtt': 716573, 'atp': 1613.37, 'oi': '', 'spot_price': 0, 'total_buy_qty': 101618, 'total_sell_qty': 89750, 'lower_circuit': 1456.05, 'upper_circuit': 1779.55, 'yearly_low': 1255.65, 'yearly_high': 1869.95, 'bids': [{'quantity': 144, 'price': 1627.9, 'orders': 4}, {'quantity': 30, 'price': 1627.85, 'orders': 1}, {'quantity': 55, 'price': 1627.8, 'orders': 1}, {'quantity': 1, 'price': 1627.55, 'orders': 1}, {'quantity': 23, 'price': 1627.5, 'orders': 1}], 'asks': [{'quantity': 135, 'price': 1628.9, 'orders': 2}, {'quantity': 1012, 'price': 1629, 'orders': 14}, {'quantity': 1, 'price': 1629.05, 'orders': 1}, {'quantity': 2, 'price': 1629.1, 'orders': 1}, {'quantity': 56, 'price': 1629.3, 'orders': 2}], 'ltt': 1553850655000}
 
-def event_handler_quote_update(message):
-    print("Quote Update: %s" % str(message))
+f = open('new.csv','w+')
 
-def get_data()
+writer = csv.writer(f)
 
-s = Session(api_key["ak"])
-s.set_redirect_uri ('http://127.0.0.1')
-s.set_api_secret(api_key["aks"])
-s.set_code(openurl_function(api_key))
-access_token = s.retrieve_access_token()
-
-u = Upstox(api_key["ak"],access_token)
-u.set_on_quote_update(event_handler_quote_update)
-u.get_master_contract('NSE_EQ')
-tata = u.get_instrument_by_symbol('NSE_EQ', 'TATACHEM')
-b = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', 'TATACHEM'), LiveFeedType.Full)
-print(b)
+writer.writerow(a)
+writer.writerow(a.values())
