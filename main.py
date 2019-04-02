@@ -33,21 +33,22 @@ def openurl_function(api_key):
 def write_csv(u, instrument):
     u.get_master_contract('NSE_EQ')
     stamp = 0
-    while 1:
-        try:
-            live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
-            if stamp == 0:
-                stamp = live_feed['timestamp']
-                with open(instrument + '.csv', 'wb+') as output:
-                    writer = csv.writer(output)
-                    writer.writerow(live_feed)
-                    writer.writerow(live_feed.values())
-            else:
-                with open(instrument + '.csv', 'wb+') as output:
-                        writer = csv.writer(output)
-                        writer.writerow(live_feed.values())
-        except:
-            pass
+    while True:
+        live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
+        if stamp == 0:
+            stamp = live_feed['timestamp']
+            with open(instrument + '.csv', 'wb+') as output:
+                writer = csv.writer(output)
+                writer.writerow(live_feed)
+                writer.writerow(live_feed.values())
+            print("Wrote zeroth row and values for "+instrument)
+        else:
+            stamp = live_feed['timestamp']
+            with open(instrument + '.csv', 'wb+') as output:
+                writer = csv.writer(output)
+                writer.writerow(live_feed.values())
+            print("Wrote "+stamp+"'s values for "+instrument)
+
 
 if __name__ == "__main__":
     list_of_instruments = ["TATACHEM", "YESBANK"] # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
@@ -59,8 +60,20 @@ if __name__ == "__main__":
 
     u = Upstox(api_key["ak"], access_token)
 
-    jobs = []
-    for instrument in list_of_instruments:
-        p = multiprocessing.Process(target=write_csv, args=(u, instrument,))
-        jobs.append(p)
-        p.start()
+
+    def event_handler_quote_update(message):
+        print("Quote Update: %s" % str(message))
+
+    u.get_master_contract('NSE_EQ')
+    u.get_master_contract('BSE_EQ')
+    u.set_on_quote_update(event_handler_quote_update)
+    u.subscribe(u.get_instrument_by_symbol('NSE_EQ', 'TATASTEEL'), LiveFeedType.Full)
+    u.subscribe(u.get_instrument_by_symbol('BSE_EQ', 'RELIANCE'), LiveFeedType.LTP)
+
+    u.start_websocket(True)
+
+    # jobs = []
+    # for instrument in list_of_instruments:
+    #     p = multiprocessing.Process(target=write_csv, args=(u, instrument,))
+    #     jobs.append(p)
+    #     p.start()
