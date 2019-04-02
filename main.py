@@ -31,8 +31,8 @@ def openurl_function(api_key):
 
 
 def write_csv(u, instrument):
-    stamp = 0
     u.get_master_contract('NSE_EQ')
+    stamp = 0
     while 1:
         try:
             live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
@@ -43,14 +43,9 @@ def write_csv(u, instrument):
                     writer.writerow(live_feed)
                     writer.writerow(live_feed.values())
             else:
-                if stamp != live_feed['timestamp']:
-                    stamp = live_feed['timestamp']
-                    with open(instrument + '.csv', 'wb+') as output:
+                with open(instrument + '.csv', 'wb+') as output:
                         writer = csv.writer(output)
-                        writer.writerow(live_feed)
                         writer.writerow(live_feed.values())
-                else:
-                    print("Timeout on "+instrument)
         except:
             pass
 
@@ -63,6 +58,7 @@ if __name__ == "__main__":
     access_token = s.retrieve_access_token()
 
     u = Upstox(api_key["ak"], access_token)
+
     jobs = []
     for instrument in list_of_instruments:
         p = multiprocessing.Process(target=write_csv, args=(u, instrument,))
