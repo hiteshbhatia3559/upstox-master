@@ -33,29 +33,47 @@ def openurl_function(api_key):
 def write_csv(u, instrument):
     stamp = 0
     u.get_master_contract('NSE_EQ')
+    i = 0
     while 1:
         try:
             live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
-            if stamp == 0:
-                stamp = live_feed['timestamp']
-                with open(instrument + '.csv', 'wb+') as output:
+            print(live_feed)
+            print("iteration" + str(i))
+            i += 1
+            if i == 0:
+                with open(instrument + '.csv', 'a+') as output:
                     writer = csv.writer(output)
                     writer.writerow(live_feed)
-                    writer.writerow(live_feed.values())
-            else:
-                if stamp != live_feed['timestamp']:
-                    stamp = live_feed['timestamp']
-                    with open(instrument + '.csv', 'wb+') as output:
-                        writer = csv.writer(output)
-                        writer.writerow(live_feed)
-                        writer.writerow(live_feed.values())
-                else:
-                    print("Timeout on "+instrument)
+            with open(instrument + '.csv', 'a+') as output:
+                writer = csv.writer(output)
+                writer.writerow(live_feed.values())
+            if i == 20:
+                print("Done")
+                break
+            # Legacy code
+
+            # if stamp == 0:
+            #     stamp = live_feed['timestamp']
+            #     with open(instrument + '.csv', 'wb+') as output:
+            #         writer = csv.writer(output)
+            #         writer.writerow(live_feed)
+            #         writer.writerow(live_feed.values())
+            # else:
+            #     if stamp != live_feed['timestamp']:
+            #         stamp = live_feed['timestamp']
+            #         with open(instrument + '.csv', 'wb+') as output:
+            #             writer = csv.writer(output)
+            #             writer.writerow(live_feed)
+            #             writer.writerow(live_feed.values())
+            #     else:
+            #         print("Timeout on "+instrument)
         except:
+            print("Failure")
             pass
 
+
 if __name__ == "__main__":
-    list_of_instruments = ["TATACHEM", "YESBANK"] # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
+    list_of_instruments = ["TATACHEM", "YESBANK"]  # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
     s = Session(api_key["ak"])
     s.set_redirect_uri('http://127.0.0.1')
     s.set_api_secret(api_key["aks"])
