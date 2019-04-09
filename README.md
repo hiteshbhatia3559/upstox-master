@@ -34,6 +34,6 @@ d. 'python main.py' will run the script (if there is an error, contact me)
 e. The output will be <name_of_instrument>.csv which you can open in Excel
 5. If you want to add instruments/stocks to track, open main.py in notepad or notepad++, then edit line 58.
 6. You need to add the ticker of the stock, not the name (for eg, Tata Chemicals is not valid but TATACHEM is)
-7. All done. Read the Note above if you haven't read.
+7. All done. Read the Note above if you haven't read. Stop the program after the day ends.
 8. After one run, MAKE SURE TO CLEAR ALL ROWS
 ```

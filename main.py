@@ -47,9 +47,6 @@ def write_csv(u, instrument):
             with open(instrument + '.csv', 'a+') as output:
                 writer = csv.writer(output)
                 writer.writerow(live_feed.values())
-            if i == 20:
-                print("Done")
-                break
             # Legacy code
 
             # if stamp == 0:
@@ -70,7 +67,6 @@ def write_csv(u, instrument):
         except:
             print("Failure")
             pass
-
 
 if __name__ == "__main__":
     list_of_instruments = ["TATACHEM", "YESBANK"]  # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
