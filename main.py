@@ -36,7 +36,7 @@ def write_csv(u, instrument,limit=5):
     while 1:
         try:
             live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
-            print("iteration " + str(i))
+            print("iteration " + str(i)+" for "+instrument)
             if i == 0:
                 print("Writing headers for "+instrument)
                 with open(instrument + '.csv', 'a+') as output:
