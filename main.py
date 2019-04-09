@@ -30,31 +30,31 @@ def openurl_function(api_key):
     return code[1]
 
 
-def write_csv(u, instrument):
-    stamp = 0
+def write_csv(u, instrument,limit=5):
     u.get_master_contract('NSE_EQ')
     i = 0
     while 1:
         try:
             live_feed = u.get_live_feed(u.get_instrument_by_symbol('NSE_EQ', instrument), LiveFeedType.Full)
             print("iteration " + str(i))
-            i += 1
             if i == 0:
                 print("Writing headers for "+instrument)
                 with open(instrument + '.csv', 'a+') as output:
                     writer = csv.writer(output)
                     writer.writerow(live_feed)
+            i += 1
             with open(instrument + '.csv', 'a+') as output:
                 writer = csv.writer(output)
                 writer.writerow(live_feed.values())
-            if i == 5:
+            if i == limit:
+                print("Limit reached for "+str(limit))
                 break
         except:
             print("Failure")
             pass
 
 if __name__ == "__main__":
-    list_of_instruments = ["TATACHEM", "YESBANK","IDBI","RPOWER","DLF","PCJEWELLER"]  # ONLY EDIT THIS, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
+    list_of_instruments = ["TATACHEM", "YESBANK","IDBI"]  # ONLY EDIT THIS or LINE 67, SIMPLY ADD NAMES OF STOCKS YOU WANT TO TRACK
     s = Session(api_key["ak"])
     s.set_redirect_uri('http://127.0.0.1')
     s.set_api_secret(api_key["aks"])
@@ -64,6 +64,6 @@ if __name__ == "__main__":
     u = Upstox(api_key["ak"], access_token)
     jobs = []
     for instrument in list_of_instruments:
-        p = multiprocessing.Process(target=write_csv, args=(u, instrument,))
+        p = multiprocessing.Process(target=write_csv, args=(u, instrument,5,)) # Change 5 to a large number if you want all rows
         jobs.append(p)
         p.start()
